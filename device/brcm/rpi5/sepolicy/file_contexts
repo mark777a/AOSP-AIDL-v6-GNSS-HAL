@@ -1,0 +1,21 @@
+#/device/brcm/rpi5/sepolicy/file_contexts - lines added marked with + as first caracter (remove + caracter before saving)
+...
+# DRM
+/data/vendor/mediadrm(/.*)?  u:object_r:mediadrm_vendor_data_file:s0
+
++# GPS / GNSS HAL Binary
++/vendor/bin/hw/android\.hardware\.gnss-service\.rpi$    u:object_r:hal_gnss_rpi_exec:s0
+
++# USB GPS dongles (u-blox 7, VK-162) NMEA port
++# Covers any enumerated index, and both ttyACM (typical) and ttyUSB
++# (some VK-162 clones use a CH340/PL2303 chip and enumerate here instead) -
++# matches the ttyACM*/ttyUSB0 fallback in NmeaReader::findDevice().
++/dev/ttyACM[0-9]+    u:object_r:gps_device:s0
++/dev/ttyUSB[0-9]+    u:object_r:gps_device:s0
+
+# Graphics
+/dev/dri(/.*)?                                                                   u:object_r:gpu_device:s0
+/vendor/bin/hw/android\.hardware\.graphics\.allocator-service\.minigbm_gbm_mesa  u:object_r:hal_graphics_allocator_default_exec:s0
+/vendor/lib64/hw/mapper\.minigbm_gbm_mesa\.so                                    u:object_r:same_process_hal_file:s0
+/vendor/lib64/hw/vulkan\.broadcom\.so                                            u:object_r:same_process_hal_file:s0
+...

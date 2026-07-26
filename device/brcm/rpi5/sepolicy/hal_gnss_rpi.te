@@ -1,0 +1,15 @@
+type hal_gnss_rpi, domain;
+hal_server_domain(hal_gnss_rpi, hal_gnss)
+
+type hal_gnss_rpi_exec, exec_type, vendor_file_type, file_type;
+init_daemon_domain(hal_gnss_rpi)
+
+# Allow reading from ttyACM and ttyUSB
+# ioctl - TCGETS/TCSETS/TCFLSH - which rw_file_perms alone does not grant).
+allow hal_gnss_rpi device:dir { search open read getattr };
+allow hal_gnss_rpi tmpfs:dir { search open read getattr };
+allow hal_gnss_rpi gps_device:chr_file { rw_file_perms ioctl };
+
+# Binder communication with framework
+binder_call(hal_gnss_rpi, servicemanager)
+
