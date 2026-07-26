@@ -1,0 +1,22 @@
+cc_binary {
+    name: "android.hardware.gnss-service.rpi",
+    vendor: true,
+    relative_install_path: "hw",
+    init_rc: ["android.hardware.gnss-service.rpi.rc"],
+    vintf_fragments: ["android.hardware.gnss-service.rpi.xml"],
+    
+    srcs: [
+        "main.cpp",
+        "Gnss.cpp",
+        "NmeaReader.cpp",
+        "NmeaParser.cpp",
+    ],
+
+    shared_libs: [
+        "libbase",
+        "libbinder_ndk",
+        "libutils",
+        "liblog",
+        "android.hardware.gnss-V6-ndk", // Maps to the latest AIDL version in tree
+    ],
+}

@@ -1,0 +1,5 @@
+service vendor.gnss-rpi /vendor/bin/hw/android.hardware.gnss-service.rpi
+    class hal
+    user gps
+    group system gps
+    interface aidl android.hardware.gnss.IGnss/default
