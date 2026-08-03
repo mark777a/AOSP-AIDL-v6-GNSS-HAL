@@ -43,6 +43,9 @@ private:
 
     std::atomic<bool> mRunning;
     std::thread mThread;
+    // Serialize lifecycle transitions so repeated start/stop calls cannot
+    // replace a still-joinable reader thread.
+    std::mutex mLifecycleMutex;
     std::mutex mMutex;
     
     NmeaParser mParser;
