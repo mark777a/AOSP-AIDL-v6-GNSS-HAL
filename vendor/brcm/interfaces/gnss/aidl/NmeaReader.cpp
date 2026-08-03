@@ -15,13 +15,20 @@
 static constexpr speed_t kSerialBaudRate = B9600;
 
 void NmeaReader::start() {
-    mRunning = true;
+    std::lock_guard<std::mutex> lifecycleLock(mLifecycleMutex);
+    if (mRunning.exchange(true)) {
+        LOG(INFO) << "GNSS NmeaReader already started";
+        return;
+    }
     LOG(INFO) << "GNSS NmeaReader started";
     mThread = std::thread(&NmeaReader::readLoop, this);
 }
 
 void NmeaReader::stop() {
-    mRunning = false;
+    std::lock_guard<std::mutex> lifecycleLock(mLifecycleMutex);
+    if (!mRunning.exchange(false) && !mThread.joinable()) {
+        return;
+    }
     LOG(INFO) << "GNSS NmeaReader stopped";
     if (mThread.joinable()) {
         mThread.join();
@@ -221,4 +228,3 @@ int64_t NmeaReader::getCurrentTime() {
     LOG(INFO) << "GNSS NmeaReader getCurrentTime called " << ts.tv_sec * 1000LL + ts.tv_nsec / 1000000LL;
     return ts.tv_sec * 1000LL + ts.tv_nsec / 1000000LL;
 }
-
